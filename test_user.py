@@ -10,5 +10,6 @@ def test_an_create_new_user():
 def test_fname_and_email_are_not_empty():
     with pytest.raises(ValueError, match="First name is required"):
         user1 = User("", "Elling", "jelling@gmail.com")
+    with pytest.raises(ValueError, match="First name is required"):
+        user1 = User("Joe", "Elling", "")
 
-        

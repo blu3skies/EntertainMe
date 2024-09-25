@@ -5,7 +5,7 @@ class User:
 
     def __init__(self, fname, lname, email):
 
-        if fname == "":
+        if fname == "" or email == "":
             raise ValueError ("First name is required")
         else:
             self.fname = fname
