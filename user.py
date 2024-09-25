@@ -75,6 +75,7 @@ class User:
             raise ValueError("Password must contain at least one number")
         return True  # Only return True if all checks pass
     
+
     def _create_user_in_db(self):
         # Re-establish the database connection
         connection = pymysql.connect(
@@ -99,7 +100,3 @@ class User:
         finally:
             cursor.close()
             connection.close()
-
-
-ronnie = User("Ronnie", "Elling", "ron@gmail.com", "woofwoof!01")
-        
