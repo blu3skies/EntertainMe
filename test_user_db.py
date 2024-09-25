@@ -9,9 +9,8 @@ db_user = os.getenv('DB_USER')
 db_password = os.getenv('DB_PASSWORD')
 db_name = os.getenv('DB_NAME')
 
-
-def test_new_user_in_db():
-    # Re-establish the connection and cursor for this test
+@pytest.fixture
+def db_connection():
     connection = pymysql.connect(
         host=db_host,
         user=db_user,
@@ -20,17 +19,33 @@ def test_new_user_in_db():
         port=3306
     )
     cursor = connection.cursor()
+    cursor.execute('DROP TABLE IF EXISTS users')
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        user_id INT AUTO_INCREMENT PRIMARY KEY,
+        fname VARCHAR(50) NOT NULL,
+        lname VARCHAR(50),
+        password_hash VARCHAR(255) NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL
+        );
+    ''')
+    yield connection, cursor  # Provide the connection and cursor to the test
+    cursor.close()
+    connection.close()
+
+
+def test_new_user_in_db(db_connection):
+    connection, cursor = db_connection
 
     # Create a new user
     peppa = User("Peppa", "Elling", "peppa@hotmail.com", "Snacks!21")
-    
-    # Correct the SQL query with %s for parameter
+
+    # Correct the SQL query, replacing ? with %s for PyMySQL
     cursor.execute('SELECT fname FROM users WHERE email = %s', (peppa.email,))
     result = cursor.fetchone()
 
     # Assert that the first name of the user matches
     assert result[0] == "Peppa"
 
-    # Close the cursor and connection
-    cursor.close()
-    connection.close()
+#def test_user_already_exists(db_connection)
+    #
