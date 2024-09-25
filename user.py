@@ -1,3 +1,43 @@
+import os
+import pymysql
+
+# Fetch database credentials from environment variables
+db_host = os.getenv('DB_HOST')
+db_user = os.getenv('DB_USER')
+db_password = os.getenv('DB_PASSWORD')
+db_name = os.getenv('DB_NAME')
+
+# Establish the connection using environment variables
+connection = pymysql.connect(
+    host=db_host,
+    user=db_user,
+    password=db_password,
+    database=db_name,
+    port=3306  # Default port
+)
+
+# Create a cursor object to interact with the database
+cursor = connection.cursor()
+
+# Example: Create a users table if it doesn't exist
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        user_id INT AUTO_INCREMENT PRIMARY KEY,
+        fname VARCHAR(50) UNIQUE, -- NOT NULL
+        lname VARCHAR(50) UNIQUE, -- NULL ALLOWED
+        password_hash VARCHAR(255),
+        email VARCHAR(100) UNIQUE
+    );
+''')
+
+# Commit the changes to the database
+connection.commit()
+
+# Close the connection
+cursor.close()
+connection.close()
+
+
 class User:
     __fname = ""
     __lname = ""
@@ -36,8 +76,3 @@ class User:
         return True  # Only return True if all checks pass
 
         
-# Troubleshooting block
-try:
-    user = User("John", "Doe", "john.doe@example.com", "wkjlfdksffssfds!ass")
-except ValueError as e:
-    print(f"Error: {e}")
