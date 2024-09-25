@@ -18,15 +18,14 @@ connection = pymysql.connect(
 
 # Create a cursor object to interact with the database
 cursor = connection.cursor()
-
 # Example: Create a users table if it doesn't exist
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS users (
         user_id INT AUTO_INCREMENT PRIMARY KEY,
-        fname VARCHAR(50) UNIQUE, -- NOT NULL
-        lname VARCHAR(50) UNIQUE, -- NULL ALLOWED
-        password_hash VARCHAR(255),
-        email VARCHAR(100) UNIQUE
+        fname VARCHAR(50) NOT NULL,
+        lname VARCHAR(50),
+        password_hash VARCHAR(255) NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL
     );
 ''')
 
@@ -61,6 +60,7 @@ class User:
             self.lname = lname 
             self.email = email
             self.password = password
+            self._create_user_in_db()
     
     def valid_email_check(self, email):
         return '@' in email and '.' in email
@@ -74,5 +74,32 @@ class User:
         elif not any(chr.isdigit() for chr in password):
             raise ValueError("Password must contain at least one number")
         return True  # Only return True if all checks pass
+    
+    def _create_user_in_db(self):
+        # Re-establish the database connection
+        connection = pymysql.connect(
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            port=3306
+        )
+        
+        cursor = connection.cursor()
+        
+        try:
+            # Insert the user into the database
+            cursor.execute('''
+                           INSERT INTO users (fname, lname, password_hash, email)
+                           VALUES (%s, %s, %s, %s)
+                           ''', (self.fname, self.lname, self.password, self.email))
+            connection.commit()
+        except pymysql.MySQLError as e:
+            print(f"Error: {e}")
+        finally:
+            cursor.close()
+            connection.close()
 
+
+ronnie = User("Ronnie", "Elling", "ron@gmail.com", "woofwoof!01")
         
