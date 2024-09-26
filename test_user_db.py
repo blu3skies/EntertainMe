@@ -36,16 +36,11 @@ def db_connection():
 
 def test_new_user_in_db(db_connection):
     connection, cursor = db_connection
-
-    # Create a new user
     peppa = User("Peppa", "Elling", "peppa@hotmail.com", "Snacks!21")
-
-    # Correct the SQL query, replacing ? with %s for PyMySQL
     cursor.execute('SELECT fname FROM users WHERE email = %s', (peppa.email,))
     result = cursor.fetchone()
 
     # Assert that the first name of the user matches
     assert result[0] == "Peppa"
 
-#def test_user_already_exists(db_connection)
-    #
+    

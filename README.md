@@ -17,7 +17,7 @@ This project is currently under development. Below are the tasks for **Stage 1**
 - [x] **Create User Class**  
   Define a `User` class in Python to manage user details and interactions with the database.
 
-- [ ] **Add Users to User Table**  
+- [X] **Add Users to User Table**  
   Create a `users` table in your SQL database, and write a function to add users to this table.
 
 - [ ] **Create Sign In/Login Frontend**  

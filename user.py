@@ -51,6 +51,8 @@ class User:
             raise ValueError ("Email address is required")
         elif not self.valid_email_check(email):
             raise ValueError ("A valid email is required")
+        elif self.user_exists(email):
+            raise ValueError ("Account already exists, please sign in with this email address.")
         elif password == "":
             raise ValueError ("Password is required")
         elif not self.password_is_strong(password):
@@ -75,6 +77,27 @@ class User:
             raise ValueError("Password must contain at least one number")
         return True  # Only return True if all checks pass
     
+    def user_exists(self, email):
+        connection = pymysql.connect(
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            port=3306
+        )
+        cursor = connection.cursor()
+        cursor.execute('SELECT email FROM users WHERE email = %s', (email,))
+        result = cursor.fetchone()
+        cursor.close()
+        connection.close()
+
+        # If a result is found, the user exists, return True
+        if result:
+            return True
+        else:
+            return False
+
+        
 
     def _create_user_in_db(self):
         # Re-establish the database connection
@@ -85,7 +108,7 @@ class User:
             database=db_name,
             port=3306
         )
-        
+
         cursor = connection.cursor()
         
         try:
@@ -100,3 +123,10 @@ class User:
         finally:
             cursor.close()
             connection.close()
+
+
+#try:
+#    user1 = User("John", "Doe", "john.doe1@example.com", "Ronni3i!s3pic")
+#    user1 = User("John", "Doe", "john.doe2@exampg=le.com", "Ronni3!is3pic")
+#except ValueError as e:
+#    print(f"Error: {e}")
