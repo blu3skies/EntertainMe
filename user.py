@@ -63,6 +63,7 @@ class User:
             self.email = email
             self.password = password
             self._create_user_in_db()
+            self.id = self.giveid(email)
     
     def valid_email_check(self, email):
         return '@' in email and '.' in email
@@ -109,8 +110,8 @@ class User:
             port=3306
         )
 
-        cursor = connection.cursor()
-        
+        cursor = connection.cursor()    
+
         try:
             # Insert the user into the database
             cursor.execute('''
@@ -123,6 +124,20 @@ class User:
         finally:
             cursor.close()
             connection.close()
+    
+    def giveid(self, email):
+        connection = pymysql.connect(
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            port=3306
+        )
+
+        cursor = connection.cursor()
+        cursor.execute('SELECT user_id FROM users WHERE email = %s', (email,))
+        result = cursor.fetchone()
+        return result[0]
 
 
 #try:

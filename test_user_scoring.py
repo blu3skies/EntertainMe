@@ -1,9 +1,9 @@
 import pymysql
 import os
 import pytest
+from quiz import Quiz
 from user import User
 
-# Fetch database credentials from environment variables
 db_host = os.getenv('DB_HOST')
 db_user = os.getenv('DB_USER')
 db_password = os.getenv('DB_PASSWORD')
@@ -48,17 +48,27 @@ def db_connection():
     cursor.close()
     connection.close()
 
+def test_user_can_start_a_quiz():
 
-def test_new_user_in_db(db_connection):
+    user1 = User("test", "testy", "test1@gmail.com", "!!password!01")
+    quiz1 = Quiz(user1.id)
+
+    assert quiz1.user_id == 3
+
+
+def test_user_can_give_movie_a_score():
     connection, cursor = db_connection
-    peppa = User("Peppa", "Elling", "peppa@hotmail.com", "Snacks!21")
-    cursor.execute('SELECT fname FROM users WHERE email = %s', (peppa.email,))
+    user2 = User("test", "testy", "test2@gmail.com", "!!password!01")
+    quiz2 = Quiz(user2.id)
+
+    quiz2.give_score(9)
+
+    cursor.execute('SELECT score FROM quiz_results WHERE user_id = %s', (user2.id,))
     result = cursor.fetchone()
 
     # Assert that the first name of the user matches
-    assert result[0] == "Peppa"
+    assert result[0] == 9
 
-def test_user_id():
-    pepparonnie = User("pep", "ron", "peparon@hotmail.com", "!!Snacks!21")
-    assert pepparonnie.id == 2
+
+    
     

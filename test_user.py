@@ -1,5 +1,56 @@
-from user import User
+import pymysql
+import os
 import pytest
+from user import User
+
+# Fetch database credentials from environment variables
+db_host = os.getenv('DB_HOST')
+db_user = os.getenv('DB_USER')
+db_password = os.getenv('DB_PASSWORD')
+db_name = os.getenv('DB_NAME')
+
+@pytest.fixture
+def db_connection():
+    connection = pymysql.connect(
+        host=db_host,
+        user=db_user,
+        password=db_password,
+        database=db_name,
+        port=3306
+    )
+    cursor = connection.cursor()
+    cursor.execute('SET FOREIGN_KEY_CHECKS=0;')
+    cursor.execute('DROP TABLE IF EXISTS quiz_results')
+    cursor.execute('DROP TABLE IF EXISTS users')
+    cursor.execute('SET FOREIGN_KEY_CHECKS=1;')
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        user_id INT AUTO_INCREMENT PRIMARY KEY,
+        fname VARCHAR(50) NOT NULL,
+        lname VARCHAR(50),
+        password_hash VARCHAR(255) NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL
+        );
+    ''')
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS quiz_results (
+        quiz_result_id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        movie_id INT NOT NULL,
+        score INT CHECK (score BETWEEN 1 AND 10),
+        quiz_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(user_id),
+        FOREIGN KEY (movie_id) REFERENCES movies(id)
+        );      
+    ''')
+    
+    yield connection, cursor  # Provide the connection and cursor to the test
+    cursor.close()
+    connection.close()
+    
+    yield connection, cursor  # Provide the connection and cursor to the test
+    cursor.close()
+    connection.close()
 
 def test_an_create_new_user():
     testuser = User("Joe", "Elling", "jelling0@gmail.com", "password!01")
@@ -34,3 +85,7 @@ def test_user_already_exists():
     peppa1 = User("Peppa1", "Elling", "peppa1@hotmail.com", "Snacks!21")
     with pytest.raises(ValueError, match="Account already exists, please sign in with this email address."):
         peppa2 = User("Peppa2", "el", "peppa1@hotmail.com", "Ronni3is3pic!")
+
+
+
+    
