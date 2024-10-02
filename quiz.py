@@ -44,13 +44,27 @@ connection.close()
 
 class Quiz:
     __user_id = ""
+    __current_movie_id = ""
     
     def __init__(self, user_id):
 
         self.user_id = user_id
+        self.current_movie_id = self.get_movie
+
+    def get_movie():
+        connection, cursor = db_connection
+        cursor.execute('SELECT id FROM movies ORDER BY RAND() LIMIT 1')
+        return cursor.fetchone()
 
 
-    def give_score(self, score)
+    def give_score(self, score):
+        connection, cursor = db_connection
+        cursor.execute('''
+                           INSERT INTO quiz_results (user_id, movie_id, score )
+                           VALUES (%s, %s, %s,)
+                           ''', (self.user_id, self.current_movie_id, score))
+        connection.commit()
+
+
+
         
-        
-    
