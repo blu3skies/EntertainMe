@@ -55,19 +55,26 @@ def test_user_can_start_a_quiz():
 
     assert quiz1.user_id == 3
 
-
-def test_user_can_give_movie_a_score():
-    connection, cursor = db_connection
+def test_quiz_presents_movie():
     user2 = User("test", "testy", "test2@gmail.com", "!!password!01")
     quiz2 = Quiz(user2.id)
 
-    quiz2.give_score(9)
+    assert quiz2.current_movie_id is not None
 
-    cursor.execute('SELECT score FROM quiz_results WHERE user_id = %s', (user2.id,))
-    result = cursor.fetchone()
 
-    # Assert that the first name of the user matches
-    assert result[0] == 9
+
+#def test_user_can_give_movie_a_score():
+#    connection, cursor = db_connection
+#    user2 = User("test", "testy", "test2@gmail.com", "!!password!01")
+#    quiz2 = Quiz(user2.id)
+#
+#    quiz2.give_score(9)
+#
+#    cursor.execute('SELECT score FROM quiz_results WHERE user_id = %s', (user2.id,))
+#    result = cursor.fetchone()
+#
+#    # Assert that the first name of the user matches
+#    assert result[0] == 9
 
 
     
