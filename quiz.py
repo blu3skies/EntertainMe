@@ -1,0 +1,56 @@
+import os
+import pymysql
+from user import User
+
+
+
+# Fetch database credentials from environment variables
+db_host = os.getenv('DB_HOST')
+db_user = os.getenv('DB_USER')
+db_password = os.getenv('DB_PASSWORD')
+db_name = os.getenv('DB_NAME')
+
+# Establish the connection using environment variables
+connection = pymysql.connect(
+    host=db_host,
+    user=db_user,
+    password=db_password,
+    database=db_name,
+    port=3306  # Default port
+)
+
+# Create a cursor object to interact with the database
+cursor = connection.cursor()
+# Example: Create a users table if it doesn't exist
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS quiz_results (
+        quiz_result_id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        movie_id INT NOT NULL,
+        score INT CHECK (score BETWEEN 1 AND 10),
+        quiz_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(user_id),
+        FOREIGN KEY (movie_id) REFERENCES movies(id)
+        );     
+''')
+
+# Commit the changes to the database
+connection.commit()
+
+# Close the connection
+cursor.close()
+connection.close()
+
+
+class Quiz:
+    __user_id = ""
+    
+    def __init__(self, user_id):
+
+        self.user_id = user_id
+
+
+    def give_score(self, score)
+        
+        
+    
