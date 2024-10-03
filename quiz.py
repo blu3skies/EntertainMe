@@ -94,11 +94,12 @@ class Quiz:
         self.current_movie_id = self.get_movie()
 
 
-userA = User("test", "testy", "testA@gmail.com", "!!password!01")
-quizA = Quiz(userA.id)
+#userA = User("test", "testy", "testA@gmail.com", "!!password!01")
+
+#quizA = Quiz(userA.id)
 
 #quizA.give_score(8)
 
-print(quizA.current_movie_id)
+#print(quizA.current_movie_id)
 
          
