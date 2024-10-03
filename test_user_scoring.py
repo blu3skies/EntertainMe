@@ -76,6 +76,20 @@ def test_user_can_give_movie_a_score(db_connection):
     # Assert that the first name of the user matches
     assert result[0] == 9
 
+def test_user_can_give_next_movie_a_score(db_connection):
+    connection, cursor = db_connection
+    user4 = User("test", "testy", "test3@gmail.com", "!!password!01")
+    quiz4 = Quiz(user4.id)
+    film1 = quiz4.current_movie_id
+    quiz4.give_score(9)
+    film2 = quiz4.current_movie_id
+
+    assert film1 is not film2
+
+
+
+
+
 
     
     
