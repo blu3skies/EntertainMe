@@ -49,22 +49,54 @@ class Quiz:
     def __init__(self, user_id):
 
         self.user_id = user_id
-        self.current_movie_id = self.get_movie
+        self.current_movie_id = self.get_movie()
 
-    def get_movie():
-        connection, cursor = db_connection
+    def get_movie(self):
+        connection = pymysql.connect(
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            port=3306
+        )
+
+        cursor = connection.cursor()
         cursor.execute('SELECT id FROM movies ORDER BY RAND() LIMIT 1')
-        return cursor.fetchone()
+        result = cursor.fetchone()
+        connection.close()
+        return result[0] 
 
 
     def give_score(self, score):
-        connection, cursor = db_connection
-        cursor.execute('''
-                           INSERT INTO quiz_results (user_id, movie_id, score )
-                           VALUES (%s, %s, %s,)
-                           ''', (self.user_id, self.current_movie_id, score))
-        connection.commit()
+        # Establish the connection (or use a passed-in cursor/connection object)
+        connection = pymysql.connect(
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            port=3306
+        )
+        cursor = connection.cursor()
+
+        try:
+            # Insert the movie score into the quiz_results table
+            cursor.execute('''
+                INSERT INTO quiz_results (user_id, movie_id, score)
+                VALUES (%s, %s, %s)
+            ''', (self.user_id, self.current_movie_id, score))
+            connection.commit()
+        except pymysql.MySQLError as e:
+            print(f"Error: {e}")
+        finally:
+            cursor.close()
+            connection.close()
 
 
+userA = User("test", "testy", "testA@gmail.com", "!!password!01")
+quizA = Quiz(userA.id)
 
-        
+#quizA.give_score(8)
+
+print(quizA.current_movie_id)
+
+         
