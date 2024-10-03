@@ -90,6 +90,8 @@ class Quiz:
         finally:
             cursor.close()
             connection.close()
+        
+        self.current_movie_id = self.get_movie()
 
 
 userA = User("test", "testy", "testA@gmail.com", "!!password!01")
