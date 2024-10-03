@@ -86,6 +86,14 @@ def test_user_can_give_next_movie_a_score(db_connection):
 
     assert film1 is not film2
 
+    quiz4.give_score(7)
+
+    cursor.execute('SELECT score FROM quiz_results WHERE movie_id = %s', (film2,))
+    result = cursor.fetchone()
+
+    # Assert that the first name of the user matches
+    assert result[0] == 7
+
 
 
 
