@@ -80,7 +80,7 @@ class Quiz:
         cursor = connection.cursor()
         cursor.execute('SELECT poster_path FROM movies WHERE id =%s', (self.current_movie_id))
         result = cursor.fetchone()
-        return result[0] 
+        return "https://image.tmdb.org/t/p/original/" + result[0] 
 
         #https://image.tmdb.org/t/p/original/
 

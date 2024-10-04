@@ -10,7 +10,7 @@
     <h2>Rate the Movie</h2>
 
     <!-- Assuming you have a column for movie poster URL in your database -->
-    <img src="{{ quiz.movie_poster }}" alt="Movie Poster" style="width: 300px; height: 450px;"><br><br>
+    <img src="{{ quiz.current_movie_poster }}" alt="Movie Poster" style="width: 300px; height: 450px;"><br><br>
 
     <form method="POST" action="/submit_score">
         <label for="score">Your score (1-10):</label>
