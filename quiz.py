@@ -45,11 +45,13 @@ connection.close()
 class Quiz:
     __user_id = ""
     __current_movie_id = ""
+    __current_movie_poster = ""
     
     def __init__(self, user_id):
 
         self.user_id = user_id
         self.current_movie_id = self.get_movie()
+        self.current_movie_poster = self.get_movie_poster()
 
     def get_movie(self):
         connection = pymysql.connect(
@@ -65,6 +67,22 @@ class Quiz:
         result = cursor.fetchone()
         connection.close()
         return result[0] 
+    
+    def get_movie_poster(self):
+        connection = pymysql.connect(
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            port=3306
+        )
+
+        cursor = connection.cursor()
+        cursor.execute('SELECT poster_path FROM movies WHERE id =%s', (self.current_movie_id))
+        result = cursor.fetchone()
+        return result[0] 
+
+        #https://image.tmdb.org/t/p/original/
 
 
     def give_score(self, score):
@@ -94,12 +112,12 @@ class Quiz:
         self.current_movie_id = self.get_movie()
 
 
-#userA = User("test", "testy", "testA@gmail.com", "!!password!01")
+userA = User("test", "testy", "testA@gmail.com", "!!password!01")
 
-#quizA = Quiz(userA.id)
+quizA = Quiz(userA.id)
 
 #quizA.give_score(8)
 
-#print(quizA.current_movie_id)
+print(quizA.current_movie_poster)
 
          
