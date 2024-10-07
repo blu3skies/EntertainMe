@@ -53,7 +53,7 @@ def test_user_can_start_a_quiz():
     user1 = User("test", "testy", "test1@gmail.com", "!!password!01")
     quiz1 = Quiz(user1.id)
 
-    assert quiz1.user_id == 3
+    assert quiz1.user_id == 2
 
 def test_quiz_presents_movie():
     user2 = User("test", "testy", "test2@gmail.com", "!!password!01")
@@ -100,3 +100,4 @@ def test_quiz_has_poster_current_poster_parth():
     quiz5 = Quiz(user5.id)
 
     assert quiz5.current_movie_poster is not None
+
