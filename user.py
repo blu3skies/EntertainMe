@@ -64,6 +64,58 @@ class User:
             self.password = password
             self._create_user_in_db()
             self.id = self.giveid(email)
+
+    @staticmethod
+    def signin(email, password):
+        connection = pymysql.connect(
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            port=3306
+        )
+        cursor = connection.cursor()
+        cursor.execute('SELECT user_id, password_hash FROM users WHERE email = %s',(email))
+        result = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        user_id, stored_password = result
+        if result[0] is None:
+            raise ValueError ("User does not exist")
+        elif stored_password == password:
+            return User.get_user_by_id(user_id)
+        else:
+            raise ValueError("Incorrect password")
+        
+    @staticmethod
+    def get_user_by_id(user_id):
+        connection = pymysql.connect(
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            port=3306
+        )
+        cursor = connection.cursor()
+        cursor.execute('SELECT fname, lname, email, password_hash FROM users WHERE user_id = %s',(user_id))
+        result = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        fname, lname, email, password = result
+        return User.create_from_db(fname, lname, email, password, user_id)
+    
+    @classmethod
+    def create_from_db(cls, fname, lname, email, password, user_id):
+        """Alternate constructor for creating a User object from existing data."""
+        user = cls.__new__(cls)  # Bypass __init__
+        user.fname = fname
+        user.lname = lname
+        user.email = email
+        user.password = password
+        user.id = user_id
+        return user
+        
+
     
     def valid_email_check(self, email):
         return '@' in email and '.' in email

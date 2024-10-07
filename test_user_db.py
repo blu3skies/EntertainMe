@@ -61,4 +61,13 @@ def test_new_user_in_db(db_connection):
 def test_user_id():
     pepparonnie = User("pep", "ron", "peparon@hotmail.com", "!!Snacks!21")
     assert pepparonnie.id == 2
+
+def test_existing_user_can_sign_in(db_connection): 
+    connection, cursor = db_connection
+
+    bentley = User("Bentley", "Elling" ,"mrb@woof.com", "TastryTreats!24!")
     
+    bentley_new_session = User.signin("mrb@woof.com", "TastryTreats!24!")
+    print(bentley_new_session)
+
+    assert bentley_new_session.id == bentley.id
