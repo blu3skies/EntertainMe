@@ -5,27 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .score-box {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            background-color: #f0f0f0;
+            text-align: center;
+            line-height: 50px;
+            font-size: 18px;
+            border: 2px solid #ccc;
+            cursor: pointer;
+        }
+
+        .score-box:hover {
+            background-color: #ddd;
+        }
+    </style>
 </head>
 <body>
     <h2>Rate the Movie</h2>
+    <div class="poster-container">
+        <img src="{{ quiz.current_movie_poster }}" alt="Movie Poster" style="width: 300px; height: 450px;">
+    </div>
 
-    <!-- Assuming you have a column for movie poster URL in your database -->
-    <img src="{{ quiz.current_movie_poster }}" alt="Movie Poster" style="width: 300px; height: 450px;"><br><br>
+    <!-- Display clickable score boxes -->
+    <form action="{{ url_for('submit_score') }}" method="POST">
+        <input type="hidden" name="movie_id" value="{{ quiz.current_movie_id }}">
 
-    <form method="POST" action="/submit_score">
-        <label for="score">Your score (1-10):</label>
-        <input type="number" id="score" name="score" min="1" max="10" required><br><br>
-        <button type="submit">Submit Score</button>
-    </form>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul>
-        {% for category, message in messages %}
-          <li class="{{ category }}">{{ message }}</li>
+        {% for i in range(1, 11) %}
+        <button type="submit" name="score" value="{{ i }}" class="score-box">{{ i }}</button>
         {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+
+        <!-- Unwatched button -->
+        <button type="submit" name="score" value="unwatched" class="score-box">Unwatched</button>
+    </form>
 </body>
 </html>

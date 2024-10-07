@@ -58,17 +58,25 @@ def start_quiz():
     else:
         return redirect(url_for('signin'))
 
-# Route to submit the movie score
 @app.route('/submit_score', methods=['POST'])
 def submit_score():
     if 'user_id' in session:
         score = request.form['score']
-        quiz = Quiz(session['user_id'])
-        quiz.give_score(int(score))
-        flash('Score submitted!', 'success')
+        movie_id = request.form['movie_id']
+
+        if score == "unwatched":
+            flash('Movie marked as unwatched.', 'info')
+        else:
+            # Convert the score to an integer and save it
+            quiz = Quiz(session['user_id'])
+            quiz.current_movie_id = movie_id  # Set the movie being rated
+            quiz.give_score(int(score))
+            flash('Score submitted!', 'success')
+
         return redirect(url_for('start_quiz'))  # Redirect to the next quiz round
     else:
         return redirect(url_for('signin'))
 
 if __name__ == '__main__':
     app.run(debug=True)
+
