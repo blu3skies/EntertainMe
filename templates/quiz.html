@@ -5,41 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        .score-box {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            margin: 5px;
-            background-color: #f0f0f0;
-            text-align: center;
-            line-height: 50px;
-            font-size: 18px;
-            border: 2px solid #ccc;
-            cursor: pointer;
-        }
-
-        .score-box:hover {
-            background-color: #ddd;
-        }
-    </style>
 </head>
 <body>
-    <h2>Rate the Movie</h2>
-    <div class="poster-container">
-        <img src="{{ quiz.current_movie_poster }}" alt="Movie Poster" style="width: 300px; height: 450px;">
+    <div class="container">
+        <h2>Rate the Movie</h2>
+        <!-- Movie Poster -->
+        <img src="{{ quiz.current_movie_poster }}" alt="Movie Poster" class="movie-poster"><br><br>
+
+        <!-- Form to submit the score -->
+        <form id="score-form" method="POST" action="/submit_score">
+            <!-- Hidden input to hold the score -->
+            <input type="hidden" id="score-input" name="score">
+            <!-- Hidden input to hold the movie ID -->
+            <input type="hidden" id="movie-id-input" name="movie_id" value="{{ quiz.current_movie_id }}">
+
+            <!-- Rating Scale -->
+            <div class="feedback-container">
+                <span class="feedback">&#128577;</span> <!-- sad emoji -->
+                <div class="rating-scale">
+                    <!-- 1-10 rating scale -->
+                    <div class="scale-option" data-score="1">1</div>
+                    <div class="scale-option" data-score="2">2</div>
+                    <div class="scale-option" data-score="3">3</div>
+                    <div class="scale-option" data-score="4">4</div>
+                    <div class="scale-option" data-score="5">5</div>
+                    <div class="scale-option" data-score="6">6</div>
+                    <div class="scale-option" data-score="7">7</div>
+                    <div class="scale-option" data-score="8">8</div>
+                    <div class="scale-option" data-score="9">9</div>
+                    <div class="scale-option" data-score="10">10</div>
+                </div>
+                <span class="feedback">&#128515;</span> <!-- happy emoji -->
+            </div>
+        </form>
+
+        <!-- Unwatched Button -->
+        <div class="unwatched">Unwatched</div>
     </div>
 
-    <!-- Display clickable score boxes -->
-    <form action="{{ url_for('submit_score') }}" method="POST">
-        <input type="hidden" name="movie_id" value="{{ quiz.current_movie_id }}">
+    <script>
+        // Get the hidden score input and form element
+        const scoreInput = document.getElementById('score-input');
+        const scoreForm = document.getElementById('score-form');
 
-        {% for i in range(1, 11) %}
-        <button type="submit" name="score" value="{{ i }}" class="score-box">{{ i }}</button>
-        {% endfor %}
+        // Add click event to scale options
+        const options = document.querySelectorAll('.scale-option');
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                // Get the score value from the clicked button
+                const score = this.getAttribute('data-score');
+                
+                // Set the hidden input value to the score
+                scoreInput.value = score;
 
-        <!-- Unwatched button -->
-        <button type="submit" name="score" value="unwatched" class="score-box">Unwatched</button>
-    </form>
+                // Automatically submit the form
+                scoreForm.submit();
+            });
+        });
+
+        // Handle Unwatched button
+        const unwatched = document.querySelector('.unwatched');
+        unwatched.addEventListener('click', function() {
+            alert('You marked this movie as Unwatched.');
+            // You can handle submission or redirection logic for "Unwatched" here
+        });
+    </script>
 </body>
 </html>
