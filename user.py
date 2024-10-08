@@ -79,10 +79,10 @@ class User:
         result = cursor.fetchone()
         cursor.close()
         connection.close()
-        user_id, stored_password = result
-        if result[0] is None:
+        if result is None:
             raise ValueError ("User does not exist")
-        elif stored_password == password:
+        user_id, stored_password = result
+        if stored_password == password:
             return User.get_user_by_id(user_id)
         else:
             raise ValueError("Incorrect password")
