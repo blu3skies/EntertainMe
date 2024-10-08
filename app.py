@@ -71,7 +71,6 @@ def submit_score():
             quiz = Quiz(session['user_id'])
             quiz.current_movie_id = movie_id  # Set the movie being rated
             quiz.give_score(int(score))
-            flash('Score submitted!', 'success')
 
         return redirect(url_for('start_quiz'))  # Redirect to the next quiz round
     else:

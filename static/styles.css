@@ -12,26 +12,55 @@ body {
     text-align: center;
 }
 
-/* Container to center content */
-.container {
-    margin: auto;
-    max-width: 80%;
+/* Container for poster and buttons */
+.quiz-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
 }
 
-/* H2 Header Styling */
-h2 {
+/* Poster container for the movie poster */
+.poster-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Side buttons for 'Unwatched' and 'Add to Watchlist' */
+.side-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.side-button button {
+    background-color: #444;
     color: #fff;
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    font-weight: 600;
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: auto;
+    width: 150px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    border: none;
 }
 
-/* Styling the movie poster */
+.side-button button:hover {
+    background-color: #852328;
+}
+
+/* Styling for the movie poster */
 .movie-poster {
     border-radius: 10px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
-    width: 300px;
-    height: 450px;
+    width: 400px; /* Increase the width */
+    height: auto; /* Let the height adjust automatically to keep proportions */
 }
 
 /* Flexbox for centering and spacing the rating options */
@@ -41,6 +70,7 @@ h2 {
     align-items: center;
     margin-top: 2rem;
     gap: 1rem;
+    flex-direction: row; /* Ensures horizontal alignment */
 }
 
 /* Emojis on either side of the scale */
@@ -54,6 +84,7 @@ h2 {
     justify-content: center;
     align-items: center;
     gap: 0.5rem;
+    flex-direction: row; /* Ensures horizontal alignment */
 }
 
 .scale-option {
@@ -76,22 +107,6 @@ h2 {
 
 /* Active state */
 .scale-option.active {
-    background-color: #e50914;
-}
-
-/* Styling for the unwatched button */
-.unwatched {
-    margin-top: 1rem;
-    padding: 0.8rem 1.5rem;
-    background-color: #444;
-    color: #fff;
-    border-radius: 5px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.unwatched:hover {
     background-color: #e50914;
 }
 
@@ -172,30 +187,22 @@ input[type="number"]:focus {
     border: 1px solid #e50914;
 }
 
-/* Form container styling */
+/* Center form on sign-in/sign-up page */
 .form-container {
-    background-color: #1c1c1c;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
     width: 100%;
     max-width: 400px;
-    text-align: center;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #222;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
 }
 
-/* Footer for form links */
-.footer {
-    margin-top: 1rem;
-    color: #888;
-}
-
-.footer a {
-    color: #e50914;
-    text-decoration: none;
-}
-
-.footer a:hover {
-    text-decoration: underline;
+h2 {
+    color: #fff;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
 }
 
 /* Animation for subtle entrance */
@@ -208,4 +215,9 @@ input[type="number"]:focus {
 .feedback-container,
 .unwatched {
     animation: fadeIn 0.0s ease-in-out;
+}
+
+/* Emojis on either side of the scale */
+.feedback {
+    font-size: 2.5rem;
 }
