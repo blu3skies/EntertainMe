@@ -7,68 +7,47 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h2>Rate the Movie</h2>
-        <!-- Movie Poster -->
-        <img src="{{ quiz.current_movie_poster }}" alt="Movie Poster" class="movie-poster"><br><br>
+    <div class="quiz-container">
+        <!-- Unwatched button -->
+        <div class="side-button">
+            <button>Unwatched</button>
+        </div>
 
-        <!-- Form to submit the score -->
-        <form id="score-form" method="POST" action="/submit_score">
-            <!-- Hidden input to hold the score -->
-            <input type="hidden" id="score-input" name="score">
-            <!-- Hidden input to hold the movie ID -->
-            <input type="hidden" id="movie-id-input" name="movie_id" value="{{ quiz.current_movie_id }}">
+        <!-- Movie poster and rating scale -->
+        <div class="poster-container">
+            <h2>Rate the Movie</h2>
+            <n/>
+            <img src="{{ quiz.current_movie_poster }}" alt="Movie Poster" class="movie-poster"><br><br>
 
             <!-- Rating Scale -->
-            <div class="feedback-container">
-                <span class="feedback">&#128577;</span> <!-- sad emoji -->
-                <div class="rating-scale">
-                    <!-- 1-10 rating scale -->
-                    <div class="scale-option" data-score="1">1</div>
-                    <div class="scale-option" data-score="2">2</div>
-                    <div class="scale-option" data-score="3">3</div>
-                    <div class="scale-option" data-score="4">4</div>
-                    <div class="scale-option" data-score="5">5</div>
-                    <div class="scale-option" data-score="6">6</div>
-                    <div class="scale-option" data-score="7">7</div>
-                    <div class="scale-option" data-score="8">8</div>
-                    <div class="scale-option" data-score="9">9</div>
-                    <div class="scale-option" data-score="10">10</div>
-                </div>
-                <span class="feedback">&#128515;</span> <!-- happy emoji -->
-            </div>
-        </form>
+            <form method="POST" action="/submit_score">
+                <!-- Hidden input for movie_id -->
+                <input type="hidden" name="movie_id" value="{{ quiz.current_movie_id }}">
 
-        <!-- Unwatched Button -->
-        <div class="unwatched">Unwatched</div>
+                <div class="rating-scale">
+                    <span class="feedback">&#128577;</span> <!-- sad emoji -->
+                    {% for i in range(1, 11) %}
+                    <button type="submit" name="score" value="{{ i }}" class="scale-option">{{ i }}</button>
+                    {% endfor %}
+                    <span class="feedback">&#128515;</span> <!-- happy emoji -->
+                </div>
+            </form>
+        </div>
+
+        <!-- Add to Watchlist button -->
+        <div class="side-button">
+            <button>Add to Watchlist</button>
+        </div>
     </div>
 
-    <script>
-        // Get the hidden score input and form element
-        const scoreInput = document.getElementById('score-input');
-        const scoreForm = document.getElementById('score-form');
-
-        // Add click event to scale options
-        const options = document.querySelectorAll('.scale-option');
-        options.forEach(option => {
-            option.addEventListener('click', function() {
-                // Get the score value from the clicked button
-                const score = this.getAttribute('data-score');
-                
-                // Set the hidden input value to the score
-                scoreInput.value = score;
-
-                // Automatically submit the form
-                scoreForm.submit();
-            });
-        });
-
-        // Handle Unwatched button
-        const unwatched = document.querySelector('.unwatched');
-        unwatched.addEventListener('click', function() {
-            alert('You marked this movie as Unwatched.');
-            // You can handle submission or redirection logic for "Unwatched" here
-        });
-    </script>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul>
+        {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
 </body>
 </html>
