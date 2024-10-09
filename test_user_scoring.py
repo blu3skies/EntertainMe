@@ -38,10 +38,12 @@ def db_connection():
         user_id INT NOT NULL,
         movie_id INT NOT NULL,
         score INT CHECK (score BETWEEN 1 AND 10),
+        on_watchlist BOOLEAN DEFAULT FALSE,
+        unwatched BOOLEAN DEFAULT FALSE,
         quiz_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(user_id),
         FOREIGN KEY (movie_id) REFERENCES movies(id)
-        );      
+        );     
     ''')
     
     yield connection, cursor  # Provide the connection and cursor to the test
@@ -92,12 +94,40 @@ def test_user_can_give_next_movie_a_score(db_connection):
     result = cursor.fetchone()
 
     # Assert that the first name of the user matches
-    assert result[0] == 7
+    assert result[0] == 7    
 
-def test_quiz_has_poster_current_poster_parth():
+def test_quiz_has_poster_current_poster_path():
     
     user5 = User("test", "testy", "test5@gmail.com", "!!password!01")
     quiz5 = Quiz(user5.id)
 
     assert quiz5.current_movie_poster is not None
+
+def test_user_can_choose_add_to_watchlist(db_connection):
+    connection, cursor = db_connection
+    user6 = User("test", "testy", "test6@gmail.com", "!!password!01")
+    quiz6 = Quiz(user6.id)
+    film6 = quiz6.current_movie_id
+
+    quiz6.add_to_watchlist()
+    
+    cursor.execute('SELECT on_watchlist FROM quiz_results WHERE movie_id = %s', (film6,))
+    result = cursor.fetchone()
+
+    # Assert that the first name of the user matches
+    assert result[0] == True    
+
+def test_user_can_choose_unwatched(db_connection):
+    connection, cursor = db_connection
+    user7 = User("test", "testy", "test7@gmail.com", "!!password!01")
+    quiz7 = Quiz(user7.id)
+    film7 = quiz7.current_movie_id
+
+    quiz7.add_to_unwatched()
+    
+    cursor.execute('SELECT unwatched FROM quiz_results WHERE movie_id = %s', (film7,))
+    result = cursor.fetchone()
+
+    # Assert that the first name of the user matches
+    assert result[0] == True    
 

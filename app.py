@@ -76,6 +76,24 @@ def submit_score():
     else:
         return redirect(url_for('signin'))
 
+@app.route('/add_to_watchlist', methods=['POST'])
+def add_to_watchlist():
+    if 'user_id' in session:
+        quiz = Quiz(session['user_id'])
+        quiz.add_to_watchlist()  # Call the method to add the movie to the watchlist
+        return redirect(url_for('start_quiz'))  # Redirect to the next quiz round
+    else:
+        return redirect(url_for('signin'))
+
+@app.route('/add_to_unwatched', methods=['POST'])
+def add_to_unwatched():
+    if 'user_id' in session:
+        quiz = Quiz(session['user_id'])
+        quiz.add_to_unwatched()  # Call the method to add the movie to the watchlist
+        return redirect(url_for('start_quiz'))  # Redirect to the next quiz round
+    else:
+        return redirect(url_for('signin'))
+
 if __name__ == '__main__':
     app.run(debug=True)
 

@@ -38,10 +38,12 @@ def db_connection():
         user_id INT NOT NULL,
         movie_id INT NOT NULL,
         score INT CHECK (score BETWEEN 1 AND 10),
+        on_watchlist BOOLEAN DEFAULT FALSE,
+        unwatched BOOLEAN DEFAULT FALSE,
         quiz_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(user_id),
         FOREIGN KEY (movie_id) REFERENCES movies(id)
-        );      
+        );   
     ''')
     
     yield connection, cursor  # Provide the connection and cursor to the test
