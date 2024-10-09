@@ -28,6 +28,8 @@ cursor.execute('''
         user_id INT NOT NULL,
         movie_id INT NOT NULL,
         score INT CHECK (score BETWEEN 1 AND 10),
+        on_watchlist BOOLEAN DEFAULT FALSE,
+        unwatched BOOLEAN DEFAULT FALSE,
         quiz_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(user_id),
         FOREIGN KEY (movie_id) REFERENCES movies(id)
@@ -102,6 +104,58 @@ class Quiz:
                 INSERT INTO quiz_results (user_id, movie_id, score)
                 VALUES (%s, %s, %s)
             ''', (self.user_id, self.current_movie_id, score))
+            connection.commit()
+        except pymysql.MySQLError as e:
+            print(f"Error: {e}")
+        finally:
+            cursor.close()
+            connection.close()
+        
+        self.current_movie_id = self.get_movie()
+
+    def add_to_watchlist(self):
+        # Establish the connection (or use a passed-in cursor/connection object)
+        connection = pymysql.connect(
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            port=3306
+        )
+        cursor = connection.cursor()
+
+        try:
+            # Insert the movie score into the quiz_results table
+            cursor.execute('''
+                INSERT INTO quiz_results (user_id, movie_id, on_watchlist)
+                VALUES (%s, %s, %s)
+            ''', (self.user_id, self.current_movie_id, True))
+            connection.commit()
+        except pymysql.MySQLError as e:
+            print(f"Error: {e}")
+        finally:
+            cursor.close()
+            connection.close()
+        
+        self.current_movie_id = self.get_movie()
+        
+    def add_to_unwatched(self):
+        # Establish the connection (or use a passed-in cursor/connection object)
+        connection = pymysql.connect(
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            port=3306
+        )
+        cursor = connection.cursor()
+
+        try:
+            # Insert the movie score into the quiz_results table
+            cursor.execute('''
+                INSERT INTO quiz_results (user_id, movie_id, unwatched)
+                VALUES (%s, %s, %s)
+            ''', (self.user_id, self.current_movie_id, True))
             connection.commit()
         except pymysql.MySQLError as e:
             print(f"Error: {e}")

@@ -9,14 +9,13 @@
 <body>
     <div class="quiz-container">
         <!-- Unwatched button -->
-        <div class="side-button">
-            <button>Unwatched</button>
-        </div>
+        <form method="POST" action="/add_to_unwatched">
+            <button class="watchlist" type="submit">Unwatched</button>
+        </form>
 
         <!-- Movie poster and rating scale -->
         <div class="poster-container">
             <h2>Rate the Movie</h2>
-            <n/>
             <img src="{{ quiz.current_movie_poster }}" alt="Movie Poster" class="movie-poster"><br><br>
 
             <!-- Rating Scale -->
@@ -34,11 +33,10 @@
             </form>
         </div>
 
-        <!-- Add to Watchlist button -->
-        <div class="side-button">
-            <button>Add to Watchlist</button>
-        </div>
-    </div>
+        <!-- Add to Watchlist form -->
+        <form method="POST" action="/add_to_watchlist">
+            <button class="watchlist" type="submit">Add to Watchlist</button>
+        </form>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
