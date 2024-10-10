@@ -130,4 +130,3 @@ def test_user_can_choose_unwatched(db_connection):
 
     # Assert that the first name of the user matches
     assert result[0] == True    
-
