@@ -1,9 +1,13 @@
+from dotenv import load_dotenv
 import pymysql
 import os
 import pytest
+from quiz import Quiz
 from user import User
 
-# Fetch database credentials from environment variables
+# Load environment variables for tests
+load_dotenv('.env.test')
+
 db_host = os.getenv('DB_HOST')
 db_user = os.getenv('DB_USER')
 db_password = os.getenv('DB_PASSWORD')
@@ -16,13 +20,20 @@ def db_connection():
         user=db_user,
         password=db_password,
         database=db_name,
-        port=3306
+        port=3306,
+        ssl_disabled = True
+
     )
     cursor = connection.cursor()
+    
+    # Start a transaction for each test
+    connection.begin()
+
     cursor.execute('SET FOREIGN_KEY_CHECKS=0;')
     cursor.execute('DROP TABLE IF EXISTS quiz_results')
     cursor.execute('DROP TABLE IF EXISTS users')
     cursor.execute('SET FOREIGN_KEY_CHECKS=1;')
+    
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS users (
         user_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -30,7 +41,7 @@ def db_connection():
         lname VARCHAR(50),
         password_hash VARCHAR(255) NOT NULL,
         email VARCHAR(100) UNIQUE NOT NULL
-        );
+    );
     ''')
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS quiz_results (
@@ -43,14 +54,13 @@ def db_connection():
         quiz_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(user_id),
         FOREIGN KEY (movie_id) REFERENCES movies(id)
-        );   
+    );
     ''')
-    
-    yield connection, cursor  # Provide the connection and cursor to the test
-    cursor.close()
-    connection.close()
-    
-    yield connection, cursor  # Provide the connection and cursor to the test
+
+    yield connection, cursor
+
+    # Rollback the transaction after each test to avoid persisting data
+    connection.rollback()
     cursor.close()
     connection.close()
 

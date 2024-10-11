@@ -3,21 +3,31 @@ services:
   app:
     build: .
     ports:
-      - "5000:5000"
-    environment:
-      - DB_HOST=db
-      - DB_USER=root
-      - DB_PASSWORD=your_password
-      - DB_NAME=your_db
+      - "5001:5000"
+    env_file:
+      - .env.development
+    command: >
+      bash -c "wait-for db:3306 -- flask run --host=0.0.0.0 --port=5000"
     depends_on:
       - db
     volumes:
       - .:/app
+
+  tests:
+    build: .
+    env_file:
+      - .env.development
+    command: >
+      bash -c "wait-for db:3306 -- pytest"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+
   db:
     image: mariadb:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: your_password
-      MYSQL_DATABASE: your_db
+    env_file:
+      - .env.development
     ports:
       - "3306:3306"
     volumes:
