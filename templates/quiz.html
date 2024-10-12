@@ -51,6 +51,11 @@
             <button class="watchlist" type="submit">Add to Watchlist</button>
         </form>
 
+        <form action="/end_quiz">
+            <button type="submit" class="end-quiz-btn">End Quiz</button>
+        </form>
+        
+
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <ul>

@@ -71,6 +71,12 @@ def create_app():
             return render_template('quiz.html', quiz=quiz, user_email=user.email)  # Pass user_email to the template
         else:
             return redirect(url_for('signin'))
+    
+    @app.route('/end_quiz')
+    def end_quiz():        
+        return redirect(url_for('home'))
+
+        
 
     @app.route('/submit_score', methods=['POST'])
     def submit_score():

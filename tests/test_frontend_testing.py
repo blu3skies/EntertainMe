@@ -57,3 +57,20 @@ def test_signout(client):
     # Use GET request to sign out
     response = client.get(signout_url, follow_redirects=True)
     assert response.status_code == 200
+    assert b'Sign In' in response.data  # Assuming some quiz text is rendered on the page
+
+
+def test_user_can_end_quiz(client):
+    login_url = url_for('signin')
+    login_data = {
+        'email': 'testuser1@example.com',
+        'password': 'securepassword01!'
+    }
+    response = client.post(login_url, data=login_data, follow_redirects=True)
+    assert response.status_code == 200
+    response = client.get(url_for('start_quiz'), follow_redirects=True)
+    assert response.status_code == 200
+    response = client.get(url_for('end_quiz'), follow_redirects=True)
+    assert response.status_code == 200
+    assert b'Start Quiz' in response.data  # Assuming some quiz text is rendered on the page
+
