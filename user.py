@@ -1,5 +1,16 @@
 import os
 import pymysql
+from dotenv import load_dotenv
+
+
+# Determine which environment to load
+env = os.getenv('FLASK_ENV', 'development')  # Default to development if not set
+
+# Load the appropriate .env file based on the environment
+if env == 'test':
+    load_dotenv('.env.test')
+else:
+    load_dotenv('.env.development')
 
 # Fetch database credentials from environment variables
 db_host = os.getenv('DB_HOST')

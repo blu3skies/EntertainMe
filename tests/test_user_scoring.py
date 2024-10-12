@@ -13,6 +13,7 @@ db_user = os.getenv('DB_USER')
 db_password = os.getenv('DB_PASSWORD')
 db_name = os.getenv('DB_NAME')
 
+
 print(f"DB_HOST: {db_host}, DB_USER: {db_user}, DB_PASSWORD: {db_password}, DB_NAME: {db_name}")
 
 @pytest.fixture
