@@ -31,9 +31,29 @@ def test_signup_and_login(client):
     response = client.post(login_url, data=login_data, follow_redirects=True)
     assert response.status_code == 200  # Ensure login succeeded
 
+    assert b'testuser1@example.com' in response.data  # Assuming some quiz text is rendered on the page
+
+
     # Step 4: Assert that the 'Start Quiz' button is on the page
     # Assuming the button is part of the page after login
     assert b'Start Quiz' in response.data  # Check that the button text is in the HTML
     response = client.get(url_for('start_quiz'), follow_redirects=True)
     assert response.status_code == 200  
+    assert b'testuser1@example.com' in response.data  # Assuming some quiz text is rendered on the page
     assert b'Rate the Movie' in response.data  # Assuming some quiz text is rendered on the page
+
+
+def test_signout(client):
+    login_url = url_for('signin')
+    login_data = {
+        'email': 'testuser1@example.com',
+        'password': 'securepassword01!'
+    }
+    response = client.post(login_url, data=login_data, follow_redirects=True)
+    assert response.status_code == 200
+
+    signout_url = url_for('signout')
+    
+    # Use GET request to sign out
+    response = client.get(signout_url, follow_redirects=True)
+    assert response.status_code == 200

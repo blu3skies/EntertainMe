@@ -15,7 +15,8 @@ def create_app():
     @app.route('/')
     def home():
         if 'user_id' in session:
-            return render_template('home.html')
+            user = User.get_user_by_id(session['user_id'])  # Fetch the user object using the session user_id
+            return render_template('home.html', user_email=user.email)  # Pass the user's email to the template
         else:
             return redirect(url_for('signin'))
 
@@ -52,12 +53,22 @@ def create_app():
                 flash(str(e), 'danger')
 
         return render_template('signin.html')
+    
+    @app.route('/signout')
+
+    def signout():
+        # Remove the user from the session if they are logged in
+        session.pop('user_id', None)  # Remove the 'user_id' from the session
+        flash('You have been signed out successfully.', 'success')
+        return redirect(url_for('signin'))
+
 
     @app.route('/start_quiz')
     def start_quiz():
         if 'user_id' in session:
             quiz = Quiz(session['user_id'])
-            return render_template('quiz.html', quiz=quiz)
+            user = User.get_user_by_id(session['user_id'])
+            return render_template('quiz.html', quiz=quiz, user_email=user.email)  # Pass user_email to the template
         else:
             return redirect(url_for('signin'))
 

@@ -7,6 +7,18 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <div class="navbar">
+        <!-- Display the user's email in the top right corner -->
+        {% if user_email %}
+            <div class="user-info">
+                Logged in as: {{ user_email }}
+            </div>
+            <form action="/signout">
+              <button type="submit" class="sign-out-btn">Sign Out</button>
+          </form>
+        {% endif %}
+    </div>
+
     <div class="home-container">
         <h2>Welcome to the EntertainME!</h2>
         <p>Click the button below to start your quiz!</p>
