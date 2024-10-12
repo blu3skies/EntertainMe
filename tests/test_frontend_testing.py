@@ -73,4 +73,3 @@ def test_user_can_end_quiz(client):
     response = client.get(url_for('end_quiz'), follow_redirects=True)
     assert response.status_code == 200
     assert b'Start Quiz' in response.data  # Assuming some quiz text is rendered on the page
-
