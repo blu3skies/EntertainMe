@@ -53,6 +53,7 @@ class User:
     __lname = ""
     __email = ""
     __password = ""
+    __watchlist = ""
 
     def __init__(self, fname, lname, email, password):
 
@@ -201,6 +202,27 @@ class User:
         cursor.execute('SELECT user_id FROM users WHERE email = %s', (email,))
         result = cursor.fetchone()
         return result[0]
+    
+    def return_watchlist(self):
+        connection = pymysql.connect(
+            host=db_host,
+            user=db_user,
+            password=db_password,
+            database=db_name,
+            port=3306
+        )
+
+        cursor = connection.cursor()
+        cursor.execute('SELECT movie_id FROM quiz_results WHERE user_id = %s and on_watchlist = 1', (self.id,))
+        result = cursor.fetchall()
+          # Ensure the result is not empty
+        if result:
+            # Extract all movie_ids from the result and store them in self.watchlist
+            self.watchlist = [row[0] for row in result]
+        else:
+            self.watchlist = []  # Set an empty watchlist if no results are found
+        cursor.close()
+        connection.close()
 
 
 #try:
