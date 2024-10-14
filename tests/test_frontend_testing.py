@@ -103,11 +103,6 @@ def test_user_can_see_movie_title(client, app):
 
             # Initialize the Quiz object based on the signed-in user's ID
             quiz = Quiz(user_id)
-            print(f"Mocked Movie ID in Quiz: {quiz.current_movie_id}")
-            print(f"Mocked Movie Title in Quiz: {quiz.current_movie_name}")
-
-            # Debug: Print the HTML response to inspect
-            print(response.data.decode())
 
             # Fetch the movie title from the database using current_movie_id
             connection = pymysql.connect(
@@ -126,15 +121,37 @@ def test_user_can_see_movie_title(client, app):
 
             # Step 4: Check if the movie title is in the HTML response
             assert movie_title.encode() in response.data  # Movie title should appear in the response
-            
-#def test_user_can_see_their_watchlist(client):
-#    login_url = url_for('signin')
-#    login_data = {
-#        'email': 'testuser1@example.com',
-#        'password': 'securepassword01!'
-#    }
-#    response = client.post(login_url, data=login_data, follow_redirects=True)
-#    assert response.status_code == 200
-#    response = client.get(url_for('start_quiz'), follow_redirects=True)
-#    assert response.status_code == 200
-#    response = client.get(url_for('start_quiz'), follow_redirects=True)
+
+def test_user_can_see_their_watchlist(client):
+    # Step 1: Log in the user
+    login_url = url_for('signin')
+    login_data = {
+        'email': 'testuser1@example.com',
+        'password': 'securepassword01!'
+    }
+    response = client.post(login_url, data=login_data, follow_redirects=True)
+    assert response.status_code == 200
+
+    # Step 2: Start the quiz and get the movie title
+    response = client.get(url_for('start_quiz'), follow_redirects=True)
+    assert response.status_code == 200
+    
+    # Extract the movie title from the response data
+    html_content = response.data.decode()
+    movie_title_start = html_content.find('<h3>') + 4  # Find the start of the movie title
+    movie_title_end = html_content.find('</h3>', movie_title_start)
+    movie_title = html_content[movie_title_start:movie_title_end].strip()
+
+    print(f"Movie Title: {movie_title}")  # Debugging to check the extracted movie title
+    assert movie_title != ""  # Ensure a valid movie title was extracted
+
+    # Step 3: Click the "Watchlist" button to add the movie to the user's watchlist
+    watchlist_response = client.post(url_for('add_to_watchlist'), follow_redirects=True)
+    assert watchlist_response.status_code == 200
+
+    # Step 4: Click the "exit quiz" button to end the quiz
+    exit_quiz_response = client.get(url_for('end_quiz'), follow_redirects=True)
+    assert exit_quiz_response.status_code == 200
+
+    # Step 5: Verify the movie is in the user's watchlist
+    assert movie_title.encode() in response.data  # Check that the movie title is in the watchlist page

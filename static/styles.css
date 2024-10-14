@@ -145,6 +145,25 @@ body {
     background-color: #e50914;  /* Change color on hover */
 }
 
+/* Watchlist Grid */
+.watchlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.watchlist-item {
+    text-align: center;
+}
+
+.watchlist-poster {
+    width: 100px;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 /* Flash message styling */
 ul {
     list-style-type: none;

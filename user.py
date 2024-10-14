@@ -213,14 +213,21 @@ class User:
         )
 
         cursor = connection.cursor()
-        cursor.execute('SELECT movie_id FROM quiz_results WHERE user_id = %s and on_watchlist = 1', (self.id,))
+        cursor.execute('''
+            SELECT m.id, m.title, m.poster_path 
+            FROM quiz_results qr
+            JOIN movies m ON qr.movie_id = m.id
+            WHERE qr.user_id = %s AND qr.on_watchlist = 1
+        ''', (self.id,))
         result = cursor.fetchall()
-          # Ensure the result is not empty
+
+        # Ensure the result is not empty
         if result:
-            # Extract all movie_ids from the result and store them in self.watchlist
-            self.watchlist = [row[0] for row in result]
+            # Extract movie titles and poster paths and store them in self.watchlist
+            self.watchlist = [{'id': row[0], 'title': row[1], 'poster_path': row[2]} for row in result]
         else:
             self.watchlist = []  # Set an empty watchlist if no results are found
+
         cursor.close()
         connection.close()
 

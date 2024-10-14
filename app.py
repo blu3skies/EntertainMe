@@ -16,7 +16,8 @@ def create_app():
     def home():
         if 'user_id' in session:
             user = User.get_user_by_id(session['user_id'])  # Fetch the user object using the session user_id
-            return render_template('home.html', user_email=user.email)  # Pass the user's email to the template
+            user.return_watchlist()  # Retrieve the user's watchlist
+            return render_template('home.html', user_email=user.email, watchlist=user.watchlist)  # Pass the watchlist to the template
         else:
             return redirect(url_for('signin'))
 

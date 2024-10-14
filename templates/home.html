@@ -8,7 +8,6 @@
 </head>
 <body>
     <div class="navbar">
-        <!-- Display the user's email in the top right corner -->
         {% if user_email %}
             <div class="user-info">
                 Logged in as: {{ user_email }}
@@ -36,6 +35,17 @@
             </ul>
           {% endif %}
         {% endwith %}
+
+        <!-- Watchlist Section -->
+        <h3>Your Watchlist</h3>
+        <div class="watchlist-grid">
+            {% for movie in watchlist %}
+                <div class="watchlist-item">
+                    <img src="https://image.tmdb.org/t/p/w200{{ movie.poster_path }}" alt="{{ movie.title }}" class="watchlist-poster">
+                    <p>{{ movie.title }}</p>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </body>
 </html>
